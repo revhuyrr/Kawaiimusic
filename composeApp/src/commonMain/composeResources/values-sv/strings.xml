@@ -737,7 +737,7 @@
     <string name="import_result">Skapade spellistor: %1$d. Importerade låtar: %2$d.</string>
     <string name="import_result_skipped">Poster som hoppades över eftersom motsvarande låt saknades i filen: %1$d.</string>
     <string name="import_failed">Importen misslyckades</string>
-    <string name="import_invalid_file">Filen är inte en giltig Kawai Music-importfil. Konvertera först ditt bibliotek på simpmusic.org.</string>
+    <string name="import_invalid_file">Filen är inte en giltig Kawai Music-importfil. Konvertera först ditt bibliotek på github.com/revhuyrr/Kawaiimusic.</string>
     <string name="analytics">Statistik</string>
     <string name="select_all">Markera alla</string>
     <string name="n_selected">Markerade: %1$d</string>
@@ -908,7 +908,7 @@
     <string name="login_sync_code_expired">Koden på datorn har gått ut. Visa en ny kod och skanna igen.</string>
     <string name="login_sync_failed">Något gick fel. Försök igen.</string>
     <string name="modified_build_title">Inofficiell app</string>
-    <string name="modified_build_message">Du använder en inofficiell kopia av Kawai Music som har ändrats eller paketerats om av någon annan. Den kan inte användas. Hämta den officiella versionen från simpmusic.org.</string>
+    <string name="modified_build_message">Du använder en inofficiell kopia av Kawai Music som har ändrats eller paketerats om av någon annan. Den kan inte användas. Hämta den officiella versionen från github.com/revhuyrr/Kawaiimusic.</string>
     <string name="taste_title">Vilken musiksmak har du?</string>
     <string name="taste_invite">Låt AI analysera vad du har lyssnat på de senaste 12 månaderna och ge dig svaret.</string>
     <string name="taste_loading_title">Analyserar din musiksmak…</string>

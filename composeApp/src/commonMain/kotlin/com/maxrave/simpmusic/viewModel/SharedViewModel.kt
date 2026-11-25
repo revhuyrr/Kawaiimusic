@@ -1279,7 +1279,8 @@ class SharedViewModel(
     ) {
         // NXYMusic is a separately distributed rebrand with its own application ID and signing key.
         // Its certificate is intentionally not part of SimpMusic's F-Droid signing-key list.
-        if (packageName == "com.nxymusic") return
+        // Kawai Music is our independent distribution with its own application ID and signing key.
+        if (packageName == "com.nxymusic" || packageName == "com.kawaiimusic.app") return
         if (packageName !in Config.OFFICIAL_PACKAGE_NAMES) {
             _isOfficialBuild.value = false
             return

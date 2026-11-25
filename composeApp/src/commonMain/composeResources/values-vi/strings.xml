@@ -734,7 +734,7 @@
     <string name="import_result">Đã tạo %1$d danh sách phát và nhập %2$d bài hát.</string>
     <string name="import_result_skipped">%1$d mục đã bị bỏ qua do thiếu bài hát tương ứng trong tệp.</string>
     <string name="import_failed">Nhập dữ liệu thất bại</string>
-    <string name="import_invalid_file">Tệp này không phải là tệp nhập Kawai Music hợp lệ. Hãy chuyển đổi thư viện của bạn tại simpmusic.org trước.</string>
+    <string name="import_invalid_file">Tệp này không phải là tệp nhập Kawai Music hợp lệ. Hãy chuyển đổi thư viện của bạn tại github.com/revhuyrr/Kawaiimusic trước.</string>
     <string name="analytics">Thống kê</string>
     <string name="select_all">Chọn tất cả</string>
     <string name="n_selected">Đã chọn %1$d</string>
@@ -905,7 +905,7 @@
     <string name="login_sync_code_expired">Mã trên máy tính của bạn đã hết hạn. Hãy tạo mã mới rồi quét lại.</string>
     <string name="login_sync_failed">Đã xảy ra lỗi. Vui lòng thử lại.</string>
     <string name="modified_build_title">Ứng dụng không chính thức</string>
-    <string name="modified_build_message">Bạn đang dùng một bản Kawai Music không chính thức do người khác chỉnh sửa hoặc đóng gói lại. Bản này không thể sử dụng. Hãy tải bản chính thức tại simpmusic.org.</string>
+    <string name="modified_build_message">Bạn đang dùng một bản Kawai Music không chính thức do người khác chỉnh sửa hoặc đóng gói lại. Bản này không thể sử dụng. Hãy tải bản chính thức tại github.com/revhuyrr/Kawaiimusic.</string>
     <string name="taste_title">Gu nhạc của bạn là gì?</string>
     <string name="taste_invite">Để AI đọc 12 tháng nghe nhạc gần nhất của bạn và nói cho bạn biết.</string>
     <string name="taste_loading_title">Đang đọc gu nhạc của bạn…</string>

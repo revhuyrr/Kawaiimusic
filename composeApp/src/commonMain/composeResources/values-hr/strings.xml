@@ -693,7 +693,7 @@
     <string name="import_result">Stvorid %1$d playlists and imported %2$d songs.</string>
     <string name="import_result_skipped">%1$d entries were skipped because their song was missing from the file.</string>
     <string name="import_failed">Import failed</string>
-    <string name="import_invalid_file">This file is not a valid Kawai Music import file. Convert your library at simpmusic.org first.</string>
+    <string name="import_invalid_file">This file is not a valid Kawai Music import file. Convert your library at github.com/revhuyrr/Kawaiimusic first.</string>
     <string name="analytics">Analytics</string>
     <string name="select_all">Select all</string>
     <string name="n_selected">%1$d selected</string>

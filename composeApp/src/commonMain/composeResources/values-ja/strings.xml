@@ -734,7 +734,7 @@
     <string name="import_result">%1$d個のプレイリストを作成し、%2$d曲をインポートしました。</string>
     <string name="import_result_skipped">曲がファイルに存在しなかったため、%1$d件の項目をスキップしました。</string>
     <string name="import_failed">インポートに失敗しました</string>
-    <string name="import_invalid_file">このファイルは有効なKawai Musicインポートファイルではありません。まず、simpmusic.orgでライブラリを変換してください。</string>
+    <string name="import_invalid_file">このファイルは有効なKawai Musicインポートファイルではありません。まず、github.com/revhuyrr/Kawaiimusicでライブラリを変換してください。</string>
     <string name="analytics">統計</string>
     <string name="select_all">すべて選択</string>
     <string name="n_selected">%1$d件選択済み</string>
@@ -905,7 +905,7 @@
     <string name="login_sync_code_expired">お使いのコンピューターのコードの有効期限が切れています。新しいコードを表示して再度スキャンしてください。</string>
     <string name="login_sync_failed">問題が発生しました。もう一度やり直してください。</string>
     <string name="modified_build_title">非公式アプリ</string>
-    <string name="modified_build_message">あなたは、他の誰かによって修正または再パッケージ化されたKawai Musicの非公式コピーを使用しています。 使用できません。simpmusic.org から公式バージョンをダウンロードしてください。</string>
+    <string name="modified_build_message">あなたは、他の誰かによって修正または再パッケージ化されたKawai Musicの非公式コピーを使用しています。 使用できません。github.com/revhuyrr/Kawaiimusic から公式バージョンをダウンロードしてください。</string>
     <string name="taste_title">あなたの音楽の好みは？</string>
     <string name="taste_invite">AIに過去12か月間のあなたの聴き方を分析してもらいましょう。</string>
     <string name="taste_loading_title">あなたの音楽の好みを分析中…</string>

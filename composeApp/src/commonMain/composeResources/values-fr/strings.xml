@@ -737,7 +737,7 @@
     <string name="import_result">%1$d playlists ont été créées et %2$d titres ont été importés.</string>
     <string name="import_result_skipped">%1$d entrées ont été ignorées car le titre correspondant était absente du fichier.</string>
     <string name="import_failed">Échec de l'importation</string>
-    <string name="import_invalid_file">Ce fichier n'est pas un fichier d'importation Kawai Music valide. Commencez par convertir votre bibliothèque sur simpmusic.org.</string>
+    <string name="import_invalid_file">Ce fichier n'est pas un fichier d'importation Kawai Music valide. Commencez par convertir votre bibliothèque sur github.com/revhuyrr/Kawaiimusic.</string>
     <string name="analytics">Analyse</string>
     <string name="select_all">Tout sélectionner</string>
     <string name="n_selected">%1$d sélectionnés</string>
@@ -908,7 +908,7 @@
     <string name="login_sync_code_expired">Le code affiché sur votre ordinateur a expiré. Affichez-en un nouveau et relancez la numérisation.</string>
     <string name="login_sync_failed">Une erreur s'est produite. Veuillez réessayer.</string>
     <string name="modified_build_title">Application non officielle</string>
-    <string name="modified_build_message">Vous utilisez une copie non officielle de Kawai Music qui a été modifiée ou reconditionnée par un tiers. Elle ne peut pas être utilisée. Téléchargez la version officielle sur simpmusic.org.</string>
+    <string name="modified_build_message">Vous utilisez une copie non officielle de Kawai Music qui a été modifiée ou reconditionnée par un tiers. Elle ne peut pas être utilisée. Téléchargez la version officielle sur github.com/revhuyrr/Kawaiimusic.</string>
     <string name="taste_title">Quels sont vos goûts musicaux ?</string>
     <string name="taste_invite">Laissez l'IA analyser vos habitudes d'écoute des 12 derniers mois et vous le dire.</string>
     <string name="taste_loading_title">À la découverte de vos goûts musicaux…</string>
