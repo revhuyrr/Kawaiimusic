@@ -30,7 +30,7 @@ fun EndOfPage(withoutCredit: Boolean = false) {
     ) {
         if (!withoutCredit) {
             Text(
-                "@${now().year} NxyMusic v1 Rev-dev",
+                "©2026 Kawai Music v1.2 Rev-Dev",
                 style = typo().bodySmall,
                 textAlign = TextAlign.Center,
                 modifier =

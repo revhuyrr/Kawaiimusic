@@ -137,7 +137,7 @@
     <string name="about_us">À propos de nous</string>
     <string name="version">Version</string>
     <string name="github">GitHub</string>
-    <string name="maxrave_dev">ZENITH-IG-fallendivinesent</string>
+    <string name="maxrave_dev">©2026 Kawai Music v1.2 Rev-Dev</string>
     <string name="follow_me_on_x">Suivez-moi sur X</string>
     <string name="buy_me_a_coffee">Offrez-moi un café ! ☕</string>
     <string name="developer_blog">Blog des développeurs</string>
@@ -299,7 +299,7 @@
     <string name="older_first">Les plus anciens en premier</string>
     <string name="newer_first">Les plus récents en premier</string>
     <string name="added_date">Date d'ajout</string>
-    <string name="credit_app">Une application musicale simple utilisant YouTube Music pour le backend \n\nKawai Music est un projet open source pour diffuser de la musique à partir de YouTube et YouTube Music sans publicité ni suivi. Kawai Music offre de nombreuses fonctionnalités :\n\n - Streaming de musique \n - Paroles synchronisées\n - Personnaliser les données\n - etc… \n\nKawai Music est toujours gratuit et sans publicité\n\nConstruit avec ❤️ de Tuan Minh Nguyen Duc (ZENITH-IG-fallendivinesent)</string>
+    <string name="credit_app">Une application musicale simple utilisant YouTube Music pour le backend \n\nKawai Music est un projet open source pour diffuser de la musique à partir de YouTube et YouTube Music sans publicité ni suivi. Kawai Music offre de nombreuses fonctionnalités :\n\n - Streaming de musique \n - Paroles synchronisées\n - Personnaliser les données\n - etc… \n\nKawai Music est toujours gratuit et sans publicité\n\nConstruit avec ❤️ de Kawai Music (©2026 Kawai Music v1.2 Rev-Dev)</string>
     <string name="issue_tracker">Suivi des problèmes</string>
     <string name="featured_playlists">Playlists à la une</string>
     <string name="featured_inArtist">Présenté sur</string>

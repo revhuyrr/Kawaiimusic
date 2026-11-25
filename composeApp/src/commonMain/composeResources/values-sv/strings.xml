@@ -137,7 +137,7 @@
     <string name="about_us">Om oss</string>
     <string name="version">Version</string>
     <string name="github">GitHub</string>
-    <string name="maxrave_dev">ZENITH-IG-fallendivinesent</string>
+    <string name="maxrave_dev">©2026 Kawai Music v1.2 Rev-Dev</string>
     <string name="follow_me_on_x">Följ mig på X</string>
     <string name="buy_me_a_coffee">Bjud mig på en kaffe</string>
     <string name="developer_blog">Utvecklarblogg</string>
@@ -299,7 +299,7 @@
     <string name="older_first">Äldre först</string>
     <string name="newer_first">Nyare först</string>
     <string name="added_date">Datum då den lades till</string>
-    <string name="credit_app">En enkel musikapp som använder YouTube Music som datakälla \n\nKawai Music är ett projekt med öppen källkod för att strömma musik från YouTube och YouTube Music utan annonser och spårning. Kawai Music har många funktioner:\n\n - Strömma musik \n - Synkroniserade låttexter\n - Personanpassade data\n - med mera … \n\nKawai Music är alltid gratis och utan annonser\n\nSkapad med ❤️ av Tuan Minh Nguyen Duc (ZENITH-IG-fallendivinesent)</string>
+    <string name="credit_app">En enkel musikapp som använder YouTube Music som datakälla \n\nKawai Music är ett projekt med öppen källkod för att strömma musik från YouTube och YouTube Music utan annonser och spårning. Kawai Music har många funktioner:\n\n - Strömma musik \n - Synkroniserade låttexter\n - Personanpassade data\n - med mera … \n\nKawai Music är alltid gratis och utan annonser\n\nSkapad med ❤️ av Kawai Music (©2026 Kawai Music v1.2 Rev-Dev)</string>
     <string name="issue_tracker">Ärendehantering</string>
     <string name="featured_playlists">Utvalda spellistor</string>
     <string name="featured_inArtist">Medverkar på</string>

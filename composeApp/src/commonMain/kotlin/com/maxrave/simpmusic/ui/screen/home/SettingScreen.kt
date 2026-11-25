@@ -2772,9 +2772,7 @@ fun SettingScreen(
                 SettingItem(
                     title = stringResource(Res.string.version),
                     subtitle = stringResource(Res.string.version_format, VersionManager.getVersionName()),
-                    onClick = {
-                        navController.navigate(CreditDestination)
-                    },
+                    onClick = {},
                 )
                 SettingItem(
                     title = stringResource(Res.string.auto_check_for_update),
@@ -2790,15 +2788,15 @@ fun SettingScreen(
                 )
                 SettingItem(
                     title = stringResource(Res.string.author),
-                    subtitle = "@fallendivinesent",
+                    subtitle = "©2026 Kawai Music v1.2 Rev-Dev",
                     onClick = {
                         uriHandler.openUri("https://www.instagram.com/fallendivinesent/")
                     },
                 )
                 SettingItem(
                     title = stringResource(Res.string.developer_telegram),
-                    subtitle = "@Heavensreport",
-                    onClick = { uriHandler.openUri("https://t.me/Heavensreport") },
+                    subtitle = "Kawai Music",
+                    onClick = {},
                     leadingContent = {
                         Image(
                             painter = painterResource(Res.drawable.developer_telegram),
