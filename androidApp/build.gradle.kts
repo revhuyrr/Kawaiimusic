@@ -16,7 +16,7 @@ plugins {
 android {
     val abis = arrayOf("armeabi-v7a", "arm64-v8a", "x86_64")
 
-    namespace = "com.kawaiimusic.app"
+    namespace = "com.maxrave.simpmusic"
     compileSdk {
         version = release(37) { minorApiLevel = 2 }
     }
