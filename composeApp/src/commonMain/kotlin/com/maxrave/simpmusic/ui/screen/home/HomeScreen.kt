@@ -69,7 +69,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -91,17 +90,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.compose.currentStateAsState
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.eygraber.uri.Uri
 import com.kmpalette.loader.rememberNetworkLoader
 import com.kmpalette.rememberDominantColorState
 import com.maxrave.common.CHART_SUPPORTED_COUNTRY
@@ -109,17 +104,14 @@ import com.maxrave.common.Config
 import com.maxrave.domain.data.model.browse.album.Track
 import com.maxrave.domain.data.model.home.HomeItem
 import com.maxrave.domain.data.model.home.chart.Chart
-import com.maxrave.domain.data.model.intent.GenericIntent
 import com.maxrave.domain.data.model.mood.Mood
 import com.maxrave.domain.extension.now
-import com.maxrave.domain.manager.DataStoreManager.Values.TRUE
 import com.maxrave.domain.mediaservice.handler.PlaylistType
 import com.maxrave.domain.mediaservice.handler.QueueData
 import com.maxrave.domain.utils.toSongEntity
 import com.maxrave.domain.utils.toTrack
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.Platform
-import com.maxrave.simpmusic.expect.openUrl
 import com.maxrave.simpmusic.expect.ui.DesktopMiniPlayerClearance
 import com.maxrave.simpmusic.expect.ui.HorizontalScrollBar
 import com.maxrave.simpmusic.expect.ui.VerticalScrollBar
@@ -144,14 +136,9 @@ import com.maxrave.simpmusic.ui.component.HomeItem
 import com.maxrave.simpmusic.ui.component.HomeItemContentPlaylist
 import com.maxrave.simpmusic.ui.component.HomeShimmer
 import com.maxrave.simpmusic.ui.component.ItemArtistChart
-import com.maxrave.simpmusic.ui.component.LocalAppDialogOpen
-import com.maxrave.simpmusic.ui.component.LocalNowPlayingOpen
-import com.maxrave.simpmusic.ui.component.LocalUserStarted
 import com.maxrave.simpmusic.ui.component.MoodMomentAndGenreHomeItem
 import com.maxrave.simpmusic.ui.component.NowPlayingBottomSheet
 import com.maxrave.simpmusic.ui.component.OfflineErrorState
-import com.maxrave.simpmusic.ui.component.PromoBanner
-import com.maxrave.simpmusic.ui.component.PromoBannerData
 import com.maxrave.simpmusic.ui.component.QuickPicksItem
 import com.maxrave.simpmusic.ui.component.SectionHeaderButton
 import com.maxrave.simpmusic.ui.component.ShareSavedLyricsDialog
@@ -174,9 +161,6 @@ import com.maxrave.simpmusic.ui.theme.ArtworkShape
 import com.maxrave.simpmusic.ui.theme.LocalLiquidGlassEnabled
 import com.maxrave.simpmusic.ui.theme.desktopPanelDark
 import com.maxrave.simpmusic.ui.theme.typo
-import com.maxrave.simpmusic.utils.VersionManager
-import com.maxrave.simpmusic.utils.eligiblePromos
-import com.maxrave.simpmusic.utils.osRequirementOf
 import com.maxrave.simpmusic.viewModel.HomeViewModel
 import com.maxrave.simpmusic.viewModel.HomeViewModel.Companion.HOME_PARAMS_COMMUTE
 import com.maxrave.simpmusic.viewModel.HomeViewModel.Companion.HOME_PARAMS_ENERGIZE
@@ -197,7 +181,6 @@ import dev.chrisbanes.haze.rememberHazeState
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.http.Url
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -237,10 +220,6 @@ import simpmusic.composeapp.generated.resources.warning
 import simpmusic.composeapp.generated.resources.what_is_best_choice_today
 import simpmusic.composeapp.generated.resources.workout
 
-// Launch banner timing: how long Home's own launch dialogs get to settle, and how long the screen must
-// stay free of other dialogs before the banner draws.
-private const val PROMO_SETTLE_MS = 1_000L
-private const val PROMO_CLEAR_MS = 400L
 
 // The height the first item lost with the old app bar (64dp + the 50dp chip row, now one 56dp row) and
 // the Welcome back row (81dp), which Home's top glow still has to cover.
@@ -310,14 +289,6 @@ fun HomeScreen(
     val openAppTime by sharedViewModel.openAppTime.collectAsStateWithLifecycle()
     val shareLyricsPermissions by sharedViewModel.shareSavedLyrics.collectAsStateWithLifecycle()
 
-    // Launch banner inputs. App.kt's own dialogs, its Now Playing sheet and whether the user has
-    // started using the app come down from App.kt; Home's dialogs are read where the banner is drawn.
-    val appDialogOpen = LocalAppDialogOpen.current
-    val nowPlayingOpen = LocalNowPlayingOpen.current
-    val userStarted by rememberUpdatedState(LocalUserStarted.current)
-    // Home's own lifecycle: RESUMED only while it is the screen in front (not mid-transition to another
-    // tab, not behind a system prompt). On Desktop STARTED means its window is showing.
-    val homeLifecycle by LocalLifecycleOwner.current.lifecycle.currentStateAsState()
     // The language part of the BCP 47 tag: Android's Locale.language still reports the legacy "in"
     // for Indonesian and "iw" for Hebrew, while the config is keyed "id" and "he".
     val language = Locale.current.toLanguageTag().substringBefore('-')
@@ -369,17 +340,6 @@ fun HomeScreen(
 
     var showRequestShareLyricsPermissions by rememberSaveable {
         mutableStateOf(false)
-    }
-    // Decided once per launch (saveable, so a rotation does not count as a new launch).
-    var promoLaunchDecided by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var promoBanner by remember {
-        mutableStateOf<PromoBannerData?>(null)
-    }
-    // The banner that has gone a moment with nothing keeping it off screen; see where it is drawn.
-    var promoClearFor by remember {
-        mutableStateOf<PromoBannerData?>(null)
     }
 
     var topAppBarHeightPx by rememberSaveable {
@@ -489,118 +449,6 @@ fun HomeScreen(
                 sharedViewModel.onDoneRequestingShareLyrics(
                     contributor,
                 )
-            },
-        )
-    }
-
-    val otherDialogOpen =
-        appDialogOpen || showRequestShareLyricsPermissions || shouldShowLogInAlert
-    // The launch banner, decided once per launch. It waits for Home to settle on its own dialogs (the
-    // open count and the lyrics-sharing flag load just after the first frame) and for the update check
-    // started at launch, however long that takes, so an update dialog comes first. Then it takes the
-    // first banner this version has not shown yet.
-    LaunchedEffect(Unit) {
-        if (promoLaunchDecided) return@LaunchedEffect
-        // Marked at the start, not the end: leaving Home cancels this for good (by then the user is
-        // busy elsewhere), and a value written while Home is being left would not be saved.
-        promoLaunchDecided = true
-        snapshotFlow { openAppTime }.first { it > 0 }
-        delay(PROMO_SETTLE_MS)
-        sharedViewModel.isCheckingUpdate.first { !it }
-        if (userStarted) {
-            Logger.i("Promo", "Skipped: the user started before the banner's turn")
-            return@LaunchedEffect
-        }
-        val localTracking = sharedViewModel.getLocalTrackingEnabled().first() == TRUE
-        val youTubeLoggedIn = sharedViewModel.getYouTubeLoggedIn().first() == TRUE
-        val shown = sharedViewModel.shownPromos()
-        val promos = sharedViewModel.cachedPromos().first()
-        val os = osRequirementOf(getPlatform().osName())
-        val eligible = eligiblePromos(promos, VersionManager.getVersionName(), language, localTracking, youTubeLoggedIn, os)
-        val banner =
-            eligible
-                .firstOrNull { (promo, _) -> promo.id.orEmpty() !in shown }
-                ?.let { (promo, url) -> PromoBannerData(id = promo.id.orEmpty(), imageUrl = url, link = promo.link.orEmpty()) }
-        when {
-            banner == null ->
-                Logger.i(
-                    "Promo",
-                    "Nothing to show: ${eligible.size} of ${promos.size} banners usable here " +
-                        "(local tracking ${if (localTracking) "on" else "off"}, " +
-                        "YouTube ${if (youTubeLoggedIn) "signed in" else "signed out"}), " +
-                        "already shown in ${VersionManager.getVersionName()}: $shown",
-                )
-
-            userStarted -> Logger.i("Promo", "Skipped ${banner.id}: the user started before its turn")
-
-            else -> {
-                Logger.i("Promo", "Picked ${banner.id}, waiting for its turn")
-                promoBanner = banner
-            }
-        }
-    }
-    // Everything that keeps the banner off screen: any other dialog (it waits its turn behind them),
-    // Now Playing, and Home not being in front. On Desktop that only asks for a showing window: one
-    // opened from a terminal or an IDE may start without focus, and the click that focuses it would
-    // count as the user starting, so the banner would never get its turn.
-    val homeInFront =
-        homeLifecycle.isAtLeast(
-            if (getPlatform() == Platform.Desktop) Lifecycle.State.STARTED else Lifecycle.State.RESUMED,
-        )
-    val promoBlocked = otherDialogOpen || nowPlayingOpen || !homeInFront
-    // It draws only once the banner has gone a moment unblocked since it was decided. The wait belongs
-    // to that banner, so nothing left over from before it arrived can let it through early: it never
-    // flashes in the gap between two dialogs, and the update dialog, raised a frame after its check
-    // ends, still gets there first.
-    LaunchedEffect(promoBlocked, promoBanner) {
-        val banner = promoBanner
-        promoClearFor = null
-        if (!promoBlocked && banner != null) {
-            delay(PROMO_CLEAR_MS)
-            promoClearFor = banner
-        }
-    }
-    // Whatever the user starts before the banner's turn puts it off to a later launch, uncounted.
-    LaunchedEffect(userStarted) {
-        val pending = promoBanner
-        if (userStarted && pending != null) {
-            Logger.i("Promo", "Put off ${pending.id}: the user started before its turn")
-            promoBanner = null
-        }
-    }
-    promoBanner?.takeIf { it == promoClearFor && !promoBlocked }?.let { banner ->
-        LaunchedEffect(banner.id) { Logger.i("Promo", "On screen: ${banner.id}") }
-        PromoBanner(
-            banner = banner,
-            onOpen = {
-                Logger.i("Promo", "Opened ${banner.id}: ${banner.link}")
-                promoBanner = null
-                sharedViewModel.markPromoShown(banner.id)
-                val link = banner.link
-                when {
-                    // The same router as links from the web and the widgets.
-                    link.startsWith("simpmusic://") -> {
-                        runCatching { Uri.parse(link) }.getOrNull()?.let {
-                            sharedViewModel.setIntent(GenericIntent(data = it))
-                        }
-                    }
-
-                    // openUrl rather than LocalUriHandler, which throws where no browser answers.
-                    link.startsWith("https://", ignoreCase = true) -> {
-                        runCatching { openUrl(link) }
-                    }
-                    // Anything else is a mistake in the config: ignoring it beats crashing on a tap.
-                }
-            },
-            onClose = {
-                Logger.i("Promo", "Closed ${banner.id}")
-                promoBanner = null
-                sharedViewModel.markPromoShown(banner.id)
-            },
-            // No picture, no banner: closed without counting, so a later launch tries again.
-            onFailed = {
-                Logger.w("Promo", "Picture failed to load for ${banner.id}; closed without counting it")
-                promoBanner = null
             },
         )
     }
