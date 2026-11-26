@@ -144,7 +144,6 @@ import com.maxrave.simpmusic.ui.icon.Error
 import com.maxrave.simpmusic.ui.icon.PeopleAlt
 import com.maxrave.simpmusic.ui.icon.PlaylistAdd
 import com.maxrave.simpmusic.ui.icon.SimpIcons
-import com.maxrave.simpmusic.ui.navigation.destination.home.AppLogDestination
 import com.maxrave.simpmusic.ui.navigation.destination.home.CreditDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.DiscordLoginDestination
 import com.maxrave.simpmusic.ui.navigation.destination.login.LastfmLoginDestination
@@ -200,8 +199,6 @@ import simpmusic.composeapp.generated.resources.ai
 import simpmusic.composeapp.generated.resources.ai_api_key
 import simpmusic.composeapp.generated.resources.ai_provider
 import simpmusic.composeapp.generated.resources.anonymous
-import simpmusic.composeapp.generated.resources.app_log
-import simpmusic.composeapp.generated.resources.app_log_description
 import simpmusic.composeapp.generated.resources.app_name
 import simpmusic.composeapp.generated.resources.developer_option
 import simpmusic.composeapp.generated.resources.audio
@@ -2811,17 +2808,6 @@ fun SettingScreen(
                     subtitle = stringResource(Res.string.description_and_licenses),
                     onClick = {
                         showThirdPartyLibraries = true
-                    },
-                )
-            }
-        }
-        item(key = "developer_option") {
-            SettingGroup(title = stringResource(Res.string.developer_option)) {
-                SettingItem(
-                    title = stringResource(Res.string.app_log),
-                    subtitle = stringResource(Res.string.app_log_description),
-                    onClick = {
-                        navController.navigate(AppLogDestination)
                     },
                 )
             }
