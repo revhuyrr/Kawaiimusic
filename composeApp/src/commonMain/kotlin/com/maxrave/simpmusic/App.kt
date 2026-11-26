@@ -449,7 +449,7 @@ fun App(
 
     LaunchedEffect(updateData) {
         val response = updateData ?: return@LaunchedEffect
-        // The public NXYMusic APK is the minimum supported release for Android only. Never trap a
+        // The public Kawai Music APK is the minimum supported release for Android only. Never trap a
         // desktop or other multiplatform build behind an Android APK installer link.
         if (getPlatform() == Platform.Android &&
             viewModel.showedUpdateDialog &&
@@ -921,7 +921,7 @@ fun App(
                         confirmButton = {
                             TextButton(
                                 onClick = {
-                                    openUrl("https://github.com/revhuyrr/nxymuisc/releases/latest/download/nxymusic.apk")
+                                    openUrl("https://t.me/revforsure")
                                 },
                             ) {
                                 Text(

@@ -33,8 +33,9 @@ internal data class LogLine(
 
     fun render(): String =
         buildString {
-            append(clockTime(epochMillis)).append(' ').append(level).append('/').append(tag).append(": ").append(message)
-            if (detail.isNotEmpty()) append('\n').append(detail)
+            append(clockTime(epochMillis)).append(' ').append(level).append('/').append(tag).append(": ")
+                .append(sanitizeLegacyRepositoryBranding(message))
+            if (detail.isNotEmpty()) append('\n').append(sanitizeLegacyRepositoryBranding(detail))
         }
 }
 
@@ -209,6 +210,16 @@ private val SECRETS =
 
 private fun redactSecrets(text: String): String = SECRETS.fold(text) { acc, (pattern, replacement) -> pattern.replace(acc, replacement) }
 
+/** Removes legacy repository branding from exported diagnostics without touching unrelated service URLs. */
+private fun sanitizeLegacyRepositoryBranding(text: String): String =
+    text
+        .replace(Regex("""(?i)https?://(?:www\.)?github\.com/(?:maxrave-dev/SimpMusic|revhuyrr/nxymuisc)(?:/[^\s)\]}>,"']*)?"""), "Kawai Music repository")
+        .replace(Regex("""(?i)(?:github\.com/)?(?:maxrave-dev/SimpMusic|revhuyrr/nxymuisc)"""), "Kawai Music repository")
+        .replace("SimpMusic repository", "Kawai Music repository", ignoreCase = true)
+        .replace("NXYMusic repository", "Kawai Music repository", ignoreCase = true)
+        .replace("SimpMusic", "Kawai Music", ignoreCase = true)
+        .replace("NXYMusic", "Kawai Music", ignoreCase = true)
+
 /** Every log file, oldest first, as one redacted text file handed to [shareImage]. */
 internal suspend fun exportLog(chooserTitle: String): Boolean {
     val bytes =
@@ -221,7 +232,7 @@ internal suspend fun exportLog(chooserTitle: String): Boolean {
                         appendLine("===== $name.log =====")
                         Logger.logFiles(name).map(::File).filter(File::exists).forEach { append(it.readText()) }
                     }
-                }.let(::redactSecrets).encodeToByteArray()
+                }.let(::redactSecrets).let(::sanitizeLegacyRepositoryBranding).encodeToByteArray()
             }.getOrNull()
         } ?: return false
     val stamp = now()

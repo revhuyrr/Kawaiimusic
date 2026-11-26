@@ -1258,7 +1258,7 @@ class SharedViewModel(
                     }
 
                     else -> {
-                        log("Check for NXYMusic update error: ${response.message}", LogLevel.WARN)
+                        log("Check for Kawai Music update error: ${response.message}", LogLevel.WARN)
                     }
                 }
                 _isCheckingUpdate.value = false

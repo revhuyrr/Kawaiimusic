@@ -6,7 +6,7 @@ diff --git a/service/kotlinYtmusicScraper/src/commonMain/kotlin/com/maxrave/kotl
  
      suspend fun checkForGithubReleaseUpdate() =
 -        httpClient.get("https://api.github.com/repos/maxrave-dev/SimpMusic/releases/latest") {
-+        httpClient.get("https://api.github.com/repos/revhuyrr/nxymuisc/releases/latest") {
++        httpClient.get("https://api.github.com/repos/revhuyrr/Kawaiimusic/releases/latest") {
              contentType(ContentType.Application.Json)
          }
  
