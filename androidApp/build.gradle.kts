@@ -16,7 +16,7 @@ plugins {
 android {
     val abis = arrayOf("armeabi-v7a", "arm64-v8a", "x86_64")
 
-    namespace = "com.maxrave.simpmusic"
+    namespace = "com.zenith.kawaiimusic"
     compileSdk {
         version = release(37) { minorApiLevel = 2 }
     }
@@ -190,7 +190,7 @@ dependencies {
 }
 
 sentry {
-    org.set("simpmusic")
+    org.set("kawaiimusic")
     projectName.set("android")
     ignoredFlavors.set(setOf("foss"))
     ignoredBuildTypes.set(setOf("debug"))

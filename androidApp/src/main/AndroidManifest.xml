@@ -17,7 +17,7 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
     <uses-permission android:name="androidx.car.app.MEDIA_TEMPLATES" />
-    <!-- Login sync: scanning the QR shown by SimpMusic Desktop. -->
+    <!-- Login sync: scanning the QR shown by Kawai Music Desktop. -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- Login sync reaches the computer by its LAN address. Only enforced for apps targeting
          Android 17 (API 37) and up, where it is a runtime permission; LoginSync.android.kt asks
@@ -65,7 +65,7 @@
     </queries>
 
     <application
-        android:name=".SimpMusicApplication"
+        android:name=".KawaiMusicApplication"
         android:allowBackup="true"
         android:appCategory="audio"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -159,7 +159,7 @@
                 <data android:scheme="vnd.youtube.launch" />
             </intent-filter>
 
-            <!-- SimpMusic deep link filter (https) -->
+            <!-- Kawai Music deep link filter (https) -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -171,7 +171,7 @@
                 <data android:pathPrefix="/app/" />
             </intent-filter>
 
-            <!-- SimpMusic deep link filter (custom scheme) -->
+            <!-- Kawai Music deep link filter (custom scheme) -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

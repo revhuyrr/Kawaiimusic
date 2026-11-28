@@ -45,7 +45,7 @@ kotlin {
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
     android {
-        namespace = "com.maxrave.simpmusic.composeapp"
+        namespace = "com.zenith.kawaiimusic.composeapp"
         compileSdk {
             version = release(37) { minorApiLevel = 2 }
         }
@@ -707,7 +707,7 @@ val mpvSetupLinuxCi by tasks.registering {
 // only downloads and unpacks them: no toolchain, no host requirements, same shape as the old
 // vlcSetupAll.
 // ===========================================================================
-// Kept in a repo of its own rather than SimpMusic's own releases: these archives are ~196 MB per
+// Kept in a repo of its own rather than Kawai Music's own releases: these archives are ~196 MB per
 // mpv bump and would otherwise sit in the release list users browse for the app itself.
 val mpvNativesRepo = "maxrave-dev/simpmusic-files"
 val mpvNativesTag = "abc"
@@ -833,7 +833,7 @@ val mpvSetupAll by tasks.registering {
 }
 
 buildkonfig {
-    packageName = "com.maxrave.simpmusic"
+    packageName = "com.zenith.kawaiimusic"
     exposeObjectWithName = "BuildKonfig"
     defaultConfigs {
         val versionName =

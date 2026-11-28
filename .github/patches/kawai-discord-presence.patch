@@ -1,9 +1,7 @@
 diff --git a/service/discord/src/commonMain/kotlin/org/simpmusic/discord/DiscordRpc.kt b/service/discord/src/commonMain/kotlin/org/simpmusic/discord/DiscordRpc.kt
-index 816a132..7b53af5 100644
 --- a/service/discord/src/commonMain/kotlin/org/simpmusic/discord/DiscordRpc.kt
 +++ b/service/discord/src/commonMain/kotlin/org/simpmusic/discord/DiscordRpc.kt
-@@ -68,8 +68,8 @@ class DiscordRpc(
-         val endTime = now + ((durationMillis - currentPlaybackTimeMillis) / playbackSpeed).toLong()
+@@ -69,7 +69,7 @@
          val buttons =
              listOf(
 -                "Listen on SimpMusic" to "https://simpmusic.org/app/watch?v=${song.videoId}",
@@ -13,8 +11,7 @@ index 816a132..7b53af5 100644
              )
          gateway.sendPresence(
              Presence(
-@@ -133,10 +133,10 @@ class DiscordRpc(
- 
+@@ -134,9 +134,9 @@
      private companion object {
          const val TAG = "DiscordRpc"
 -        const val APP_NAME = "SimpMusic"
@@ -22,6 +19,30 @@ index 816a132..7b53af5 100644
          const val TYPE_LISTENING = 2
          const val USER_AGENT = "Discord-Android/314013;RNA"
          const val APP_ICON =
+-            "https://fra.cloud.appwrite.io/v1/storage/buckets/683f1f620010ba0fa5b1/files/69007bc8001a28a7cea8/view?project=67ec0369002bd8a96885"
++            "https://raw.githubusercontent.com/revhuyrr/Kawaiimusic/main/androidApp/src/main/res/drawable/app_icon.png"
+     }
+ }
+diff --git a/service/kizzy/src/commonMain/kotlin/com/my/kizzy/DiscordRPC.kt b/service/kizzy/src/commonMain/kotlin/com/my/kizzy/DiscordRPC.kt
+--- a/service/kizzy/src/commonMain/kotlin/com/my/kizzy/DiscordRPC.kt
++++ b/service/kizzy/src/commonMain/kotlin/com/my/kizzy/DiscordRPC.kt
+@@ -31,8 +31,8 @@
+             smallText = song.artistName?.firstOrNull(),
+             buttons =
+                 listOf(
+-                    "Listen on SimpMusic" to "https://simpmusic.org/app/watch?v=${song.videoId}",
+-                    "Visit SimpMusic" to "https://github.com/maxrave-dev/SimpMusic",
++                    "Listen on Kawai Music" to "https://github.com/revhuyrr/Kawaiimusic",
++                    "Visit Kawai Music" to "https://github.com/revhuyrr/Kawaiimusic",
+                 ),
+             type = Type.LISTENING,
+             since = currentTime,
+@@ -48,6 +48,6 @@
+     companion object {
+         private const val APPLICATION_ID = "1271273225120125040"
+-        private const val APP_NAME: String = "SimpMusic"
++        private const val APP_NAME: String = "Kawai Music"
+         private const val APP_ICON: String =
 -            "https://fra.cloud.appwrite.io/v1/storage/buckets/683f1f620010ba0fa5b1/files/69007bc8001a28a7cea8/view?project=67ec0369002bd8a96885"
 +            "https://raw.githubusercontent.com/revhuyrr/Kawaiimusic/main/androidApp/src/main/res/drawable/app_icon.png"
      }
