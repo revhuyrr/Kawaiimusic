@@ -122,6 +122,7 @@ import kawaimusic.composeapp.generated.resources.added_to_queue
 import kawaimusic.composeapp.generated.resources.added_to_youtube_liked
 import kawaimusic.composeapp.generated.resources.disliked
 import kawaimusic.composeapp.generated.resources.error
+import kawaimusic.composeapp.generated.resources.error_occurred
 import kawaimusic.composeapp.generated.resources.file_download_complete
 import kawaimusic.composeapp.generated.resources.file_download_save_failed
 import kawaimusic.composeapp.generated.resources.discord_login_failed

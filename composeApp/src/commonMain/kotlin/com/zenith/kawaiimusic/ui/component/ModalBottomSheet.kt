@@ -242,6 +242,7 @@ import kawaimusic.composeapp.generated.resources.edit_title
 import kawaimusic.composeapp.generated.resources.endless_queue
 import kawaimusic.composeapp.generated.resources.error_occurred
 import kawaimusic.composeapp.generated.resources.extract_source
+import kawaimusic.composeapp.generated.resources.file_download_complete
 import kawaimusic.composeapp.generated.resources.itag
 import kawaimusic.composeapp.generated.resources.key
 import kawaimusic.composeapp.generated.resources.like
