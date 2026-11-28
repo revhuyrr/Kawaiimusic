@@ -94,6 +94,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -143,6 +144,7 @@ import com.zenith.kawaiimusic.expect.ui.VerticalScrollBar
 import com.zenith.kawaiimusic.expect.ui.persistPickedImage
 import com.zenith.kawaiimusic.expect.ui.photoPickerResult
 import com.zenith.kawaiimusic.expect.ui.rememberExternalStorageWritePermission
+import com.zenith.kawaiimusic.expect.ui.toImageBitmap
 import com.zenith.kawaiimusic.extension.displayNameRes
 import com.zenith.kawaiimusic.extension.greyScale
 import com.zenith.kawaiimusic.ui.icon.AccessAlarm
@@ -1389,12 +1391,13 @@ fun NowPlayingBottomSheet(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val sharedViewModel: SharedViewModel = koinInject()
+    var downloadArtwork by remember(uiState.songUIState.videoId) { mutableStateOf<ImageBitmap?>(null) }
     val downloadProgress by sharedViewModel.downloadFileProgress.collectAsStateWithLifecycle()
     val storagePermissionDeniedMessage = stringResource(Res.string.download_storage_permission_denied)
     val storagePermission =
         rememberExternalStorageWritePermission { granted ->
             if (granted) {
-                sharedViewModel.downloadInFile()
+                sharedViewModel.downloadInFile(song = song, artwork = downloadArtwork)
             } else {
                 showToast(storagePermissionDeniedMessage, ToastGravity.Bottom)
             }
@@ -1725,6 +1728,7 @@ fun NowPlayingBottomSheet(
                                     .diskCacheKey(thumb)
                                     .crossfade(550)
                                     .build(),
+                            onSuccess = { downloadArtwork = it.result.image.toImageBitmap() },
                             placeholder = rememberHolderPainter(),
                             error = rememberHolderPainter(),
                             contentDescription = null,

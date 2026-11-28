@@ -123,6 +123,7 @@ import kawaimusic.composeapp.generated.resources.added_to_youtube_liked
 import kawaimusic.composeapp.generated.resources.disliked
 import kawaimusic.composeapp.generated.resources.error
 import kawaimusic.composeapp.generated.resources.error_occurred
+import kawaimusic.composeapp.generated.resources.file_download_artwork_not_ready
 import kawaimusic.composeapp.generated.resources.file_download_complete
 import kawaimusic.composeapp.generated.resources.file_download_save_failed
 import kawaimusic.composeapp.generated.resources.discord_login_failed
@@ -2161,10 +2162,11 @@ class SharedViewModel(
     private var _downloadFileProgress = MutableStateFlow<DownloadProgress>(DownloadProgress.INIT)
     val downloadFileProgress: StateFlow<DownloadProgress> get() = _downloadFileProgress
 
-    /** Exports the currently playing audio into the user's Download/Kawai Mp3 folder. */
-    fun downloadInFile() {
+    /** Exports the selected audio and artwork into the user's Download/Kawai Mp3 folder. */
+    fun downloadInFile(song: SongEntity? = null, artwork: ImageBitmap? = null) {
         viewModelScope.launch {
-            val track = nowPlayingState.value?.track
+            val playerState = nowPlayingState.value
+            val track = song?.toTrack() ?: playerState?.track ?: playerState?.songEntity?.toTrack()
             if (track == null) {
                 val message = getString(Res.string.error_occurred)
                 _downloadFileProgress.value = DownloadProgress.failed(message)
@@ -2172,14 +2174,24 @@ class SharedViewModel(
                 return@launch
             }
             val fileName =
-                "${nowPlayingScreenData.value.nowPlayingTitle} - ${nowPlayingScreenData.value.artistName} - ${track.videoId}"
+                "${track.title} - ${track.artists.orEmpty().joinToString(", ") { it.name }} - ${track.videoId}"
                     .replace(Regex("""[\\/:?*<>|\"]"""), "")
                     .replace(Regex("""\s+"""), "_")
                     .trim('_', '.', ' ')
                     .ifBlank { track.videoId }
-            val path = "${getAudioDownloadTempDirectory()}/$fileName"
             _downloadFileProgress.value = DownloadProgress.INIT
             try {
+                val artworkBytes = artwork?.toByteArray()
+                if (artworkBytes == null) {
+                    val message = getString(Res.string.file_download_artwork_not_ready)
+                    _downloadFileProgress.value = DownloadProgress.failed(message)
+                    makeToast(message)
+                    return@launch
+                }
+                val path = "${getAudioDownloadTempDirectory()}/$fileName"
+                withContext(Dispatchers.IO) {
+                    FileOutputStream("$path.jpg").use { it.write(artworkBytes) }
+                }
                 songRepository
                     .downloadToFile(
                         track = track,
