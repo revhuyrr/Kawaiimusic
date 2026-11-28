@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.zenith.kawaiimusic.Platform
 import com.zenith.kawaiimusic.expect.saveImageToDevice
 import com.zenith.kawaiimusic.expect.shareImage
-import com.zenith.kawaiimusic.expect.ui.rememberSaveImagePermission
+import com.zenith.kawaiimusic.expect.ui.rememberExternalStorageWritePermission
 import com.zenith.kawaiimusic.expect.ui.toPngByteArray
 import com.zenith.kawaiimusic.getPlatform
 import com.zenith.kawaiimusic.ui.component.capture.capturable
@@ -97,11 +97,11 @@ internal fun ShareImageSheet(
     val fileName = remember { "${fileNamePrefix}_${Random.nextInt(100_000, 999_999)}.png" }
 
     val savePermission =
-        rememberSaveImagePermission { granted ->
+        rememberExternalStorageWritePermission { granted ->
             if (!granted) {
                 showToast(permissionDeniedMessage, ToastGravity.Bottom)
                 busy = false
-                return@rememberSaveImagePermission
+                return@rememberExternalStorageWritePermission
             }
             scope.launch {
                 val bytes = captureController.captureAsync().await().toPngByteArray()

@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.sp
 import com.zenith.kawaiimusic.Platform
 import com.zenith.kawaiimusic.expect.saveImageToDevice
 import com.zenith.kawaiimusic.expect.shareImage
-import com.zenith.kawaiimusic.expect.ui.rememberSaveImagePermission
+import com.zenith.kawaiimusic.expect.ui.rememberExternalStorageWritePermission
 import com.zenith.kawaiimusic.expect.ui.toPngByteArray
 import com.zenith.kawaiimusic.getPlatform
 import com.zenith.kawaiimusic.ui.component.capture.capturable
@@ -143,11 +143,11 @@ fun ShareLyricsSheet(
     // Saving is the only half that can be refused: sharing goes through the app's own cache, which
     // needs nothing. On Android 10 and up, and on Desktop, this grants without a dialog.
     val savePermission =
-        rememberSaveImagePermission { granted ->
+        rememberExternalStorageWritePermission { granted ->
             if (!granted) {
                 showToast(permissionDeniedMessage, ToastGravity.Bottom)
                 busy = false
-                return@rememberSaveImagePermission
+                return@rememberExternalStorageWritePermission
             }
             scope.launch {
                 val bytes = captureController.captureAsync().await().toPngByteArray()

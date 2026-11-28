@@ -60,7 +60,7 @@ import com.zenith.kawaiimusic.expect.shareImage
 import com.zenith.kawaiimusic.expect.ui.PlatformBackdrop
 import com.zenith.kawaiimusic.expect.ui.layerBackdrop
 import com.zenith.kawaiimusic.expect.ui.rememberBackdrop
-import com.zenith.kawaiimusic.expect.ui.rememberSaveImagePermission
+import com.zenith.kawaiimusic.expect.ui.rememberExternalStorageWritePermission
 import com.zenith.kawaiimusic.expect.ui.toPngByteArray
 import com.zenith.kawaiimusic.extension.LeftToRight
 import com.zenith.kawaiimusic.getPlatform
@@ -632,11 +632,11 @@ private fun rememberWrappedShare(
     // Only saving can be refused; sharing goes through the app's own cache and needs nothing. On
     // Android 10 and up, and on Desktop, this grants without a dialog.
     val savePermission =
-        rememberSaveImagePermission { granted ->
+        rememberExternalStorageWritePermission { granted ->
             if (!granted) {
                 showToast(permissionDeniedMessage, ToastGravity.Bottom)
                 onBusy(false)
-                return@rememberSaveImagePermission
+                return@rememberExternalStorageWritePermission
             }
             scope.launch {
                 val bytes = captureController.captureAsync().await().toPngByteArray()

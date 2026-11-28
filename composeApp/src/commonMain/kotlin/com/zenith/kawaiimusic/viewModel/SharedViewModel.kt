@@ -72,8 +72,10 @@ import com.maxrave.domain.utils.toTrack
 import com.maxrave.logger.LogLevel
 import com.maxrave.logger.Logger
 import com.zenith.kawaiimusic.Platform
+import com.zenith.kawaiimusic.expect.getAudioDownloadTempDirectory
 import com.zenith.kawaiimusic.expect.getDownloadFolderPath
 import com.zenith.kawaiimusic.expect.isOnUnmeteredNetwork
+import com.zenith.kawaiimusic.expect.saveDownloadedAudioFile
 import com.zenith.kawaiimusic.expect.ui.toByteArray
 import com.zenith.kawaiimusic.getPlatform
 import com.zenith.kawaiimusic.utils.LyricsPromo
@@ -84,6 +86,7 @@ import com.zenith.kawaiimusic.utils.shownPromoIds
 import com.zenith.kawaiimusic.utils.withShownPromo
 import com.zenith.kawaiimusic.viewModel.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -94,6 +97,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -119,6 +123,7 @@ import kawaimusic.composeapp.generated.resources.added_to_youtube_liked
 import kawaimusic.composeapp.generated.resources.disliked
 import kawaimusic.composeapp.generated.resources.error
 import kawaimusic.composeapp.generated.resources.file_download_complete
+import kawaimusic.composeapp.generated.resources.file_download_save_failed
 import kawaimusic.composeapp.generated.resources.discord_login_failed
 import kawaimusic.composeapp.generated.resources.lastfm_login_failed
 import kawaimusic.composeapp.generated.resources.login_success
@@ -2155,36 +2160,56 @@ class SharedViewModel(
     private var _downloadFileProgress = MutableStateFlow<DownloadProgress>(DownloadProgress.INIT)
     val downloadFileProgress: StateFlow<DownloadProgress> get() = _downloadFileProgress
 
-    /**
-     * Exports the currently playing audio to the device's public Download directory.
-     * This is intentionally separate from the offline-cache action: this creates a
-     * user-visible playable file rather than an app-managed cache entry.
-     */
+    /** Exports the currently playing audio into the user's Download/Kawai Mp3 folder. */
     fun downloadInFile() {
         viewModelScope.launch {
-            val track = nowPlayingState.value?.track ?: return@launch
+            val track = nowPlayingState.value?.track
+            if (track == null) {
+                val message = getString(Res.string.error_occurred)
+                _downloadFileProgress.value = DownloadProgress.failed(message)
+                makeToast(message)
+                return@launch
+            }
             val fileName =
                 "${nowPlayingScreenData.value.nowPlayingTitle} - ${nowPlayingScreenData.value.artistName} - ${track.videoId}"
-                    .replace(Regex("""[|\\?*<":>]"""), "")
+                    .replace(Regex("""[\\/:?*<>|\"]"""), "")
                     .replace(Regex("""\s+"""), "_")
-                    .trim('_')
+                    .trim('_', '.', ' ')
                     .ifBlank { track.videoId }
-            val path = "${getDownloadFolderPath()}/$fileName"
+            val path = "${getAudioDownloadTempDirectory()}/$fileName"
             _downloadFileProgress.value = DownloadProgress.INIT
-            songRepository
-                .downloadToFile(
-                    track = track,
-                    videoId = track.videoId,
-                    path = path,
-                    isVideo = false,
-                ).collectLatest {
-                    _downloadFileProgress.value = it
-                    if (it.isDone) {
-                        makeToast(getString(Res.string.file_download_complete))
-                    } else if (it.isError) {
-                        makeToast("${getString(Res.string.error)}: ${it.errorMessage.orEmpty()}".trim())
+            try {
+                songRepository
+                    .downloadToFile(
+                        track = track,
+                        videoId = track.videoId,
+                        path = path,
+                        isVideo = false,
+                    ).collect { progress ->
+                        if (progress.isDone) {
+                            val saved = saveDownloadedAudioFile("$path-simpmusic.mp3", "$fileName.mp3")
+                            if (saved) {
+                                _downloadFileProgress.value = progress
+                                makeToast(getString(Res.string.file_download_complete))
+                            } else {
+                                val message = getString(Res.string.file_download_save_failed)
+                                _downloadFileProgress.value = progress.copy(isDone = false, isError = true, errorMessage = message)
+                                makeToast(message)
+                            }
+                        } else {
+                            _downloadFileProgress.value = progress
+                            if (progress.isError) {
+                                makeToast("${getString(Res.string.error)}: ${progress.errorMessage}".trim())
+                            }
+                        }
                     }
-                }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Exception) {
+                val message = error.message ?: getString(Res.string.error_occurred)
+                _downloadFileProgress.value = DownloadProgress.failed(message)
+                makeToast("${getString(Res.string.error)}: $message")
+            }
         }
     }
 

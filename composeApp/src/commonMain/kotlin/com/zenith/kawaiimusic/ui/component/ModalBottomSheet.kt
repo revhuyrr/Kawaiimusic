@@ -142,6 +142,7 @@ import com.zenith.kawaiimusic.expect.shareUrl
 import com.zenith.kawaiimusic.expect.ui.VerticalScrollBar
 import com.zenith.kawaiimusic.expect.ui.persistPickedImage
 import com.zenith.kawaiimusic.expect.ui.photoPickerResult
+import com.zenith.kawaiimusic.expect.ui.rememberExternalStorageWritePermission
 import com.zenith.kawaiimusic.extension.displayNameRes
 import com.zenith.kawaiimusic.extension.greyScale
 import com.zenith.kawaiimusic.ui.icon.AccessAlarm
@@ -229,6 +230,7 @@ import kawaimusic.composeapp.generated.resources.disliking
 import kawaimusic.composeapp.generated.resources.download
 import kawaimusic.composeapp.generated.resources.download_disabled_live
 import kawaimusic.composeapp.generated.resources.download_in_file
+import kawaimusic.composeapp.generated.resources.download_storage_permission_denied
 import kawaimusic.composeapp.generated.resources.download_speed
 import kawaimusic.composeapp.generated.resources.download_this_song_video_file_to_your_device
 import kawaimusic.composeapp.generated.resources.downloaded
@@ -1386,6 +1388,16 @@ fun NowPlayingBottomSheet(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val sharedViewModel: SharedViewModel = koinInject()
+    val downloadProgress by sharedViewModel.downloadFileProgress.collectAsStateWithLifecycle()
+    val storagePermissionDeniedMessage = stringResource(Res.string.download_storage_permission_denied)
+    val storagePermission =
+        rememberExternalStorageWritePermission { granted ->
+            if (granted) {
+                sharedViewModel.downloadInFile()
+            } else {
+                showToast(storagePermissionDeniedMessage, ToastGravity.Bottom)
+            }
+        }
     val coroutineScope = rememberCoroutineScope()
     val modelBottomSheetState =
         rememberModalBottomSheetState(
@@ -1615,6 +1627,61 @@ fun NowPlayingBottomSheet(
             scrimColor = Color.Black.copy(alpha = .5f),
             contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         ) {
+            if (downloadProgress != DownloadProgress.INIT) {
+                BasicAlertDialog(
+                    onDismissRequest = {},
+                    modifier = Modifier.wrapContentSize(),
+                ) {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.large,
+                        color = rememberSurfaceDarkColors().container,
+                        tonalElevation = AlertDialogDefaults.TonalElevation,
+                        shadowElevation = 1.dp,
+                    ) {
+                        Column(Modifier.padding(horizontal = 20.dp, vertical = 20.dp)) {
+                            Text(
+                                text = stringResource(if (downloadProgress.isError) Res.string.error_occurred else Res.string.downloading),
+                                style = typo().headlineMedium,
+                            )
+                            Row(
+                                modifier = Modifier.padding(top = 20.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                if (!downloadProgress.isDone && !downloadProgress.isError) {
+                                    CircularProgressIndicator()
+                                    Spacer(Modifier.size(15.dp))
+                                    Text(
+                                        text = stringResource(
+                                            Res.string.downloading_audio,
+                                            "${(downloadProgress.audioDownloadProgress * 100).toInt()}%",
+                                        ),
+                                        style = typo().bodyMedium,
+                                    )
+                                } else {
+                                    Text(
+                                        text =
+                                            if (downloadProgress.isError) {
+                                                downloadProgress.errorMessage
+                                            } else {
+                                                stringResource(Res.string.file_download_complete)
+                                            },
+                                        style = typo().bodyMedium,
+                                    )
+                                }
+                            }
+                            if (downloadProgress.isDone || downloadProgress.isError) {
+                                OutlinedButton(
+                                    modifier = Modifier.padding(top = 10.dp),
+                                    onClick = { sharedViewModel.downloadFileDone() },
+                                ) {
+                                    Text(stringResource(Res.string.ok))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             Card(
                 modifier =
                     Modifier
@@ -1812,8 +1879,7 @@ fun NowPlayingBottomSheet(
                         text = Res.string.download_in_file,
                         enable = !uiState.songUIState.isLive,
                     ) {
-                        sharedViewModel.downloadInFile()
-                        hideModalBottomSheet()
+                        storagePermission.requestIfNeeded()
                     }
                     // A queue row is already in the queue: its own rows above move it instead.
                     if (queuePosition == null) {

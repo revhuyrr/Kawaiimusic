@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 
 @Composable
-actual fun rememberSaveImagePermission(onResult: (granted: Boolean) -> Unit): SaveImagePermissionRequester {
+actual fun rememberExternalStorageWritePermission(onResult: (granted: Boolean) -> Unit): ExternalStorageWritePermissionRequester {
     val context = LocalContext.current
     // Read through a State rather than capturing the lambda: callers pass a fresh lambda on every
     // recomposition, so keying the remember on it would rebuild the requester constantly — and
@@ -26,7 +26,7 @@ actual fun rememberSaveImagePermission(onResult: (granted: Boolean) -> Unit): Sa
         }
 
     return remember(context, launcher) {
-        object : SaveImagePermissionRequester {
+        object : ExternalStorageWritePermissionRequester {
             override fun requestIfNeeded() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     currentOnResult(true)

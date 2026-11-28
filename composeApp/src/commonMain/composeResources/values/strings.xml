@@ -544,11 +544,13 @@
     <string name="merging_audio_and_video">Merging audio and video</string>
     <string name="error_occurred">Error occurred</string>
     <string name="download_in_file">Download In File</string>
-    <string name="file_download_complete">Saved to the Download folder</string>
+    <string name="file_download_complete">Saved to Download/Kawai Mp3</string>
+    <string name="file_download_save_failed">Could not save the song to Download/Kawai Mp3.</string>
+    <string name="download_storage_permission_denied">Storage permission is required to save this file.</string>
     <string name="downloading_audio">Downloading audio: %1$s </string>
     <string name="downloading_video">Downloading video: %1$s </string>
     <string name="ok">OK</string>
-    <string name="to_download_folder">" to Download folder"</string>
+    <string name="to_download_folder">" to Download/Kawai Mp3"</string>
     <string name="download_speed">Download speed:  %1$s </string>
     <string name="shuffle">Shuffle</string>
     <string name="other_version">Other version</string>

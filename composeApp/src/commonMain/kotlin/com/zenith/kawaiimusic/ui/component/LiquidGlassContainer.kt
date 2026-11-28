@@ -297,9 +297,14 @@ fun Modifier.drawInteractiveGlass(
                 )
                 // refractionHeight stays below the stadium inradius (minDimension / 2) so the
                 // top and bottom refraction never meet at the medial axis — that meeting point on
-                // a wide pill is what produced the dark horizontal seam. depthEffect is off to
-                // match the crisp Kyant demo look and avoid the radial discontinuity at the centre.
-                lens(size.minDimension / 4f + 2f.dp.toPx() * press, size.minDimension / 2f, false)
+                // a wide pill is what produced the dark horizontal seam. Keep depthEffect off, but
+                // enable the lens shader's RGB chromatic aberration for the requested glass glitch.
+                lens(
+                    size.minDimension / 4f + 2f.dp.toPx() * press,
+                    size.minDimension / 2f,
+                    depthEffect = false,
+                    chromaticAberration = true,
+                )
             },
             onDrawBackdrop = { drawBackdrop ->
                 drawBackdrop()
@@ -311,9 +316,9 @@ fun Modifier.drawInteractiveGlass(
                 val darken = lerp(minScrim, maxScrim, ((luminance() - 0.3f) / 0.5f).coerceIn(0f, 1f))
                 drawRect((if (isDark) Color.Black else Color.White).copy(alpha = darken))
                 val press = interaction?.pressProgress ?: 0f
-                // A very low-opacity RGB split gives the glass a soft chromatic-glitch edge without
-                // replacing the established blur/refraction stack or making text harder to read.
-                val glitchAlpha = 0.018f + 0.018f * press
+                // A faint pink/cyan rim reinforces the lens shader's RGB split without making
+                // foreground text harder to read.
+                val glitchAlpha = 0.01f + 0.014f * press
                 drawRect(
                     brush =
                         Brush.horizontalGradient(
