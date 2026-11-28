@@ -2192,6 +2192,7 @@ class SharedViewModel(
                 withContext(Dispatchers.IO) {
                     FileOutputStream("$path.jpg").use { it.write(artworkBytes) }
                 }
+                var finalProgress = DownloadProgress.INIT
                 songRepository
                     .downloadToFile(
                         track = track,
@@ -2199,23 +2200,39 @@ class SharedViewModel(
                         path = path,
                         isVideo = false,
                     ).collect { progress ->
-                        if (progress.isDone) {
-                            val saved = saveDownloadedAudioFile("$path-simpmusic.mp3", "$fileName.mp3")
-                            if (saved) {
-                                _downloadFileProgress.value = progress
-                                makeToast(getString(Res.string.file_download_complete))
+                        finalProgress = progress
+                        // The scraper marks the intermediate WebM transfer done before MP3
+                        // conversion and artwork embedding finish. Keep the UI in progress until
+                        // the flow's final emission, and only then try to export the completed MP3.
+                        _downloadFileProgress.value =
+                            if (progress.isDone) {
+                                progress.copy(
+                                    audioDownloadProgress = progress.audioDownloadProgress.coerceAtMost(0.99f),
+                                    isDone = false,
+                                )
                             } else {
-                                val message = getString(Res.string.file_download_save_failed)
-                                _downloadFileProgress.value = progress.copy(isDone = false, isError = true, errorMessage = message)
-                                makeToast(message)
+                                progress
                             }
-                        } else {
-                            _downloadFileProgress.value = progress
-                            if (progress.isError) {
-                                makeToast("${getString(Res.string.error)}: ${progress.errorMessage}".trim())
-                            }
+                        if (progress.isError) {
+                            makeToast("${getString(Res.string.error)}: ${progress.errorMessage}".trim())
                         }
                     }
+                if (finalProgress.isDone) {
+                    val saved = saveDownloadedAudioFile("$path-simpmusic.mp3", "$fileName.mp3")
+                    if (saved) {
+                        _downloadFileProgress.value = finalProgress
+                        makeToast(getString(Res.string.file_download_complete))
+                    } else {
+                        val message = getString(Res.string.file_download_save_failed)
+                        _downloadFileProgress.value =
+                            finalProgress.copy(
+                                isDone = false,
+                                isError = true,
+                                errorMessage = message,
+                            )
+                        makeToast(message)
+                    }
+                }
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (error: Exception) {
